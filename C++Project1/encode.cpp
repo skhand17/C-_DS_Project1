@@ -21,6 +21,10 @@ void insertionSortOnNonAlphaCharacters(tree[], int n);
 void printStructureOnNonAlphaCharacters(tree[], int n);
 void recursiveMerge(tree[] , int low, int high);
 void recursiveMergeOnNonAlpha(tree[], int low, int high);
+symbol* constructBinaryTreeAlpha(tree[],int n);
+symbol* constructBinaryTreeNonAlpha(tree[], int n);
+
+
 int main(int argc, char** argv) {
     string preProcessFile = argv[1];
     string typeOfSortingMethod = argv[2];
@@ -108,6 +112,9 @@ int main(int argc, char** argv) {
         default :
             cout << " Invalid Selection : " << endl;
     }
+    
+    constructBinaryTreeAlpha(alpha, countOfAlpha);
+    constructBinaryTreeNonAlpha(nonAlpha, countOfNonAlpha);
     
     return 0;
 }
@@ -303,51 +310,71 @@ void recursiveMergeOnNonAlpha(tree nonAlpha[] , int low, int high) {
     }
 }
 
-void constructBinaryTree( int n, tree alpha[]) {
-    
-    int i = 0;
-    while ( n != 1){
-    for(int j=i; j <n-1;j++){
-        
-        tree left_tree = alpha[j];
-        tree right_tree = alpha[j+1];
-        
-        symbol* p = new symbol; // p is of type symbol
-        p -> parent = NULL;
-        p ->symbol = '$';
-        
-        left_tree.root ->parent = p;
-        right_tree.root ->parent = p;
-        
+symbol* constructBinaryTreeAlpha(tree alphaArray[], int n) {
+    for (int j = 0; j < n - 1; j++) {
+
+        tree left_tree = alphaArray[0];
+        tree right_tree = alphaArray[1];
+
+        symbol* p = new symbol; // p is of type symbol*
+        p->parent = NULL;
+        p->symbol = '$';
+
+        left_tree.root->parent = p;
+        right_tree.root->parent = p;
+
         p->left = left_tree.root;
         p->right = right_tree.root;
         p->freq = left_tree.freq + right_tree.freq;
-    
-        //ptr = ptr + 2;
-        alpha[j].root = p;
-        alpha[j].freq = p->freq;
-        alpha[j].symbol = -128;
+
+        alphaArray++;
+
+        // Storing the parent symbol information in the alphaArray
+        alphaArray[0].root = p;
+        alphaArray[0].freq = p->freq;
+        alphaArray[0].symbol = p->symbol;
         
-        alpha[j+1].root = p;
-        alpha[j+1].freq = p->freq;
-        alpha[j+1].symbol = -100;
-        i = i+2;
-        for(int k = i; k<n; k++){
-            if(p->freq > alpha[k].freq){
-   //             swap(*ptr1, *ptr2);
-                // Functionality to be added
-                
-            } else {
-                continue;
-            }
+        // Sorting the elements and putting them in the correct order
+        for (int i = 1; alphaArray[i].freq <= alphaArray[i - 1].freq && i < n - 1; i++) {
+            tree temp = alphaArray[i];
+            alphaArray[i] = alphaArray[i - 1];
+            alphaArray[i - 1] = temp;
         }
     }
-        
-        n = n - 2 + 1;
-        
-        
+    return alphaArray[0].root;
 }
-    
+
+symbol* constructBinaryTreeNonAlpha(tree nonAlphaArray[], int n) {
+    for (int j = 0; j < n - 1; j++) {
+
+        tree left_tree = nonAlphaArray[0];
+        tree right_tree = nonAlphaArray[1];
+
+        symbol* p = new symbol; // p is of type symbol*
+        p->parent = NULL;
+        p->symbol = '$';
+
+        left_tree.root->parent = p;
+        right_tree.root->parent = p;
+
+        p->left = left_tree.root;
+        p->right = right_tree.root;
+        p->freq = left_tree.freq + right_tree.freq;
+
+        nonAlphaArray++;
+
+        // Storing the parent symbol information in the alphaArray
+        nonAlphaArray[0].root = p;
+        nonAlphaArray[0].freq = p->freq;
+
+        // put all elements into correct positions
+        for (int i = 1; nonAlphaArray[i].freq <= nonAlphaArray[i - 1].freq && i < n - 1; i++) {
+            tree temp = nonAlphaArray[i];
+            nonAlphaArray[i] = nonAlphaArray[i - 1];
+            nonAlphaArray[i - 1] = temp;
+        }
+    }
+    return nonAlphaArray[0].root;
 }
 
 
